@@ -9,17 +9,22 @@ const amount = document.getElementById('amount');
 
 // access the data
 
-const dummyTransactions = [
-  {id: 1, text: 'Flower', amount: -20},
-  {id: 2, text: 'Salary', amount: 220},
-  {id: 3, text: 'Salad', amount: -40},
-  {id: 4, text: 'Book', amount: 30},
-  {id: 5, text: 'Camera', amount: 120},
-];
+// const dummyTransactions = [
+//   {id: 1, text: 'Flower', amount: -20},
+//   {id: 2, text: 'Salary', amount: 220},
+//   {id: 3, text: 'Salad', amount: -40},
+//   {id: 4, text: 'Book', amount: 30},
+//   {id: 5, text: 'Camera', amount: 120},
+// ];
 
 //global variables
 
-let transactions = dummyTransactions;
+const localStorageTransactions = JSON.parse(
+  localStorage.getItem('transactions')
+);
+
+let transactions =
+  localStorage.getItem('transactions') !== null ? localStorageTransactions : [];
 
 // Add transaction
 function addTransaction(e) {
@@ -39,6 +44,8 @@ function addTransaction(e) {
     addTransactionDOM(transaction);
 
     updateValues();
+
+    updateLocalStorage();
 
     text.value = '';
     amount.value = '';
@@ -96,9 +103,16 @@ function updateValues() {
   money_minus.innerText = `$${expense}`;
 }
 
+//update local storage trnasactions
+function updateLocalStorage() {
+  localStorage.setItem('transactions', JSON.stringify(transactions));
+}
+
 //remove transaction by id
 function removeTransaction(id) {
   transactions = transactions.filter((transaction) => transaction.id !== id);
+
+  updateLocalStorage();
 
   init();
 }
